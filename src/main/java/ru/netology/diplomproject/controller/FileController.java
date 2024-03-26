@@ -1,7 +1,6 @@
 package ru.netology.diplomproject.controller;
 
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -15,7 +14,6 @@ import ru.netology.diplomproject.dto.FileResponse;
 import ru.netology.diplomproject.service.FileCloudService;
 
 
-
 @RestController
 @RequiredArgsConstructor
 public class FileController {
@@ -25,12 +23,11 @@ public class FileController {
 
     @GetMapping("/files")
     public ResponseEntity<Page<FileResponse>> getAllFiles(@RequestHeader("auth-token") String token,
-                                          @RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size) {
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<FileResponse> filePage = cloudService.getAllFiles(token, pageable);
         return ResponseEntity.ok(filePage);
-        //return cloudService.getAllFiles(token, page, size);
     }
 
     @PostMapping("/file")

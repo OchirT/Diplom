@@ -7,8 +7,9 @@ import ru.netology.diplomproject.model.FileCloud;
 
 import java.util.List;
 
-public interface FileRepository extends JpaRepository<FileCloud,Long> {
+public interface FileRepository extends JpaRepository<FileCloud, Long> {
 
     Page<FileCloud> findAllByUserDataEmail(String email, Pageable pageable);
+
     FileCloud findByFileName(String fileName);
 }

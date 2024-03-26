@@ -31,7 +31,7 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtil.generateToken(authentication);
         userTokenRepository.saveUserToken(userName, jwt);
-        log.info("User {} authentication. Token {}",userName,jwt);
+        log.info("User {} authentication. Token {}", userName, jwt);
         return new AuthResponse(jwt);
     }
 }

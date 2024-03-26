@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +14,6 @@ import ru.netology.diplomproject.exceptions.ErrorFileException;
 import ru.netology.diplomproject.exceptions.ErrorInputDataException;
 import ru.netology.diplomproject.repository.FileRepository;
 import ru.netology.diplomproject.repository.UserRepository;
-import ru.netology.diplomproject.model.AppUser;
 import ru.netology.diplomproject.model.FileCloud;
 
 import java.io.*;
@@ -24,13 +22,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
 public class FileCloudService {
-    private final String fileRepositoryDir = "D:\\allFiles\\"; //Базовая директива для создания хранилища файлов;
+    private final String fileRepositoryDir = "D:\\allFiles\\";
     private final FileRepository fileRepository;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
@@ -72,11 +69,10 @@ public class FileCloudService {
 
     public Page<FileResponse> getAllFiles(String token, Pageable pageable) {
         String userName = jwtUtil.getUsername(jwtUtil.resolveToken(token));
-        if(userName == null){
+        if (userName == null) {
             log.error("Ошибка вывода списка всех файлов");
             throw new ErrorInputDataException("Ошибка вывода списка всех файлов");
         }
-        //Pageable pageable = PageRequest.of(page, size);
         Page<FileCloud> filePage = fileRepository.findAllByUserDataEmail(userName, pageable);
         log.info("Список файлов успешно выведен на экран");
         return filePage
@@ -84,7 +80,7 @@ public class FileCloudService {
 
     }
 
-    public Resource fileDownload(String name, String token)  {
+    public Resource fileDownload(String name, String token) {
         FileCloud fileCloud = fileRepository.findByFileName(name);
         userName = jwtUtil.getUsername(jwtUtil.resolveToken(token));
         Path path = Paths.get(fileRepositoryDir + userName + "\\" + fileCloud.getFileName());

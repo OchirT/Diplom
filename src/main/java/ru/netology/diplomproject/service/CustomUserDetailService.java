@@ -21,7 +21,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser appUser = dao.findByEmail(username);
-        if(appUser == null){
+        if (appUser == null) {
             throw new ErrorInputDataException("User service Unauthorized");
         }
         return User.builder()

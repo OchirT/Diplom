@@ -15,14 +15,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.netology.diplomproject.jwt.JWTFilter;
 import ru.netology.diplomproject.service.CustomUserDetailService;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig  {
+public class SecurityConfig {
 
     @Autowired
     private JWTFilter filter;
@@ -38,6 +37,7 @@ public class SecurityConfig  {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -45,18 +45,20 @@ public class SecurityConfig  {
         daoAuthenticationProvider.setUserDetailsService(customUserDetailsServiceService);
         return daoAuthenticationProvider;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeHttpRequests()
-                .anyRequest().permitAll()
+                .requestMatchers("/login").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException)
-                        ->response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getLocalizedMessage()))
+                        -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getLocalizedMessage()))
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 import java.time.Duration;
 import java.util.Date;
 
@@ -24,7 +25,7 @@ public class JWTUtil {
         Date expired = new Date(now.getTime() + sessionTime.toMillis());
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt( new Date())
+                .setIssuedAt(new Date())
                 .setExpiration(expired)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
@@ -40,7 +41,8 @@ public class JWTUtil {
         }
         return null;
     }
-    private Claims getAllClaimsFromToken (String token) {
+
+    private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
